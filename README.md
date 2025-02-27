@@ -12,3 +12,10 @@ gst-launch-1.0 -v udpsrc port=5004 caps="application/x-rtp,media=(string)audio,c
     ! rtpopusdepay ! opusdec ! audioconvert ! autoaudiosink
 
 
+
+
+## RECEIVE AUDIO FROM THE REMOTE OPERATOR
+gst-launch-1.0 -v tcpserversrc host=(internal ip address of the home based computer) port=3000  ! gdpdepay !  rtpopusdepay ! opusdec plc=true ! audioconvert ! audioresample ! jackaudiosink sync=false
+
+## TRANSMIT AUDIO TO THE REMOTE OPERATOR
+gst-launch-1.0 -v jackaudiosrc ! audioconvert ! audioresample ! queue !  opusenc bitrate=256000 frame-size=2.5   ! rtpopuspay ! gdppay ! queue ! tcpserversink host=(internal ip address of home based computer) port=4000
